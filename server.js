@@ -1,18 +1,28 @@
 const express = require('express');
 const session = require('express-session');
+const SQLiteStore = require('connect-sqlite3')(session);
 const bcrypt = require('bcrypt');
 const sqlite3 = require('sqlite3').verbose();
 const app = express();
 
 const db = new sqlite3.Database('./db.sqlite'); // 파일 DB로 변경됨
 
+const cors = require('cors');
+app.use(cors({
+  origin: 'https://idea-collector-57v9.onrender.com',
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(express.static('public'));
 app.use(session({
+  store: new SQLiteStore({ db: 'sessions.sqlite' }),  
   secret: 'your-secret-key',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: { httpOnly: true }
 }));
+
 
 // 초기 DB 설정
 db.serialize(() => {
