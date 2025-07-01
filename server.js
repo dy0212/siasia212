@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.static('public'));
 app.use(session({
   store: new SQLiteStore({ db: 'sessions.sqlite' }),  
-  secret: 'your-secret-key',
+  secret: '0523unji',
   resave: false,
   saveUninitialized: false,
   cookie: { httpOnly: true }
