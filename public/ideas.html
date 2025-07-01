@@ -1,0 +1,48 @@
+<!-- public/ideas.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>저장된 아이디어 목록</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .card { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>📝 저장된 아이디어들</h1>
+  <div id="ideaList"></div>
+  <button onclick="window.history.back()">⬅ 돌아가기</button>
+
+  <script>
+    const API_BASE = 'http://localhost:3000';
+
+    async function loadIdeas() {
+      try {
+        const res = await fetch(`${API_BASE}/ideas`, { credentials: 'include' });
+        if (!res.ok) {
+          document.body.innerHTML = '<p>로그인이 필요합니다.</p>';
+          return;
+        }
+        const ideas = await res.json();
+        const listEl = document.getElementById('ideaList');
+        listEl.innerHTML = '';
+        ideas.slice().reverse().forEach(idea => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <strong>${idea.title}</strong><br>
+            <small>${new Date(idea.date).toLocaleString()}</small><br>
+            <p>${idea.description}</p>
+          `;
+          listEl.appendChild(card);
+        });
+      } catch (err) {
+        console.error('불러오기 실패', err);
+      }
+    }
+
+    loadIdeas();
+  </script>
+</body>
+</html>
